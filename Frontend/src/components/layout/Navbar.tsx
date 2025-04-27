@@ -3,14 +3,14 @@ import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useWeb3 } from '@/contexts/Web3Context';
 import { useAuth } from '@/contexts/AuthContext';
-import { 
-  SheetTrigger, 
-  Sheet, 
-  SheetContent, 
-  SheetHeader, 
-  SheetTitle 
+import {
+  SheetTrigger,
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle
 } from '@/components/ui/sheet';
-import { 
+import {
   NavigationMenu,
   NavigationMenuList,
   NavigationMenuItem,
@@ -24,11 +24,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from '@/lib/utils';
-import { 
-  Landmark, 
-  Menu, 
-  UserCircle, 
-  ChevronDown, 
+import {
+  Landmark,
+  Menu,
+  UserCircle,
+  ChevronDown,
   LogOut,
   ClipboardList,
   Wallet,
@@ -58,10 +58,10 @@ const Navbar = () => {
 
   // Add admin route if user is admin
   if (isAdmin || isVerifier) {
-    navItems.push({ 
-      label: 'Admin', 
-      path: '/admin', 
-      icon: <Shield className="h-4 w-4 mr-2" /> 
+    navItems.push({
+      label: 'Admin',
+      path: '/admin',
+      icon: <Shield className="h-4 w-4 mr-2" />
     });
   }
 
@@ -74,14 +74,14 @@ const Navbar = () => {
               <Landmark className="h-6 w-6 text-primary" />
               <span className="font-bold hidden sm:inline-block text-xl">LandChain</span>
             </Link>
-            
+
             {/* Desktop Navigation */}
             <NavigationMenu className="hidden md:flex ml-6">
               <NavigationMenuList>
                 {navItems.map((item) => (
                   <NavigationMenuItem key={item.path}>
-                    <Link 
-                      to={item.path} 
+                    <Link
+                      to={item.path}
                       className={cn(
                         "group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50",
                         location.pathname === item.path ? "bg-accent text-accent-foreground" : "text-foreground/70"
@@ -94,7 +94,7 @@ const Navbar = () => {
               </NavigationMenuList>
             </NavigationMenu>
           </div>
-          
+
           <div className="flex items-center gap-4">
             {isConnected ? (
               <DropdownMenu>
@@ -114,7 +114,7 @@ const Navbar = () => {
                       {walletInfo?.address}
                     </p>
                     <p className="text-xs font-medium mt-1">
-                      Balance: {walletInfo?.balance} ETH
+                      Balance: {walletInfo?.balance} ADA
                     </p>
                   </div>
                   <DropdownMenuSeparator />
@@ -131,8 +131,8 @@ const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button 
-                onClick={() => connectWallet('nami')} 
+              <Button
+                onClick={() => connectWallet('nami')}
                 disabled={connecting}
                 className="gap-2"
               >
@@ -140,7 +140,7 @@ const Navbar = () => {
                 <span>{connecting ? 'Connecting...' : 'Connect Wallet'}</span>
               </Button>
             )}
-            
+
             {/* Mobile menu button */}
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
@@ -165,8 +165,8 @@ const Navbar = () => {
                       onClick={() => setMobileMenuOpen(false)}
                       className={cn(
                         "flex items-center gap-2 px-2 py-1 rounded-md",
-                        location.pathname === item.path 
-                          ? "bg-accent text-accent-foreground font-medium" 
+                        location.pathname === item.path
+                          ? "bg-accent text-accent-foreground font-medium"
                           : "text-foreground/70 hover:text-foreground hover:bg-accent/50"
                       )}
                     >

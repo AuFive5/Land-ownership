@@ -238,7 +238,7 @@ const TransferForm = () => {
                   <p className="text-xs text-muted-foreground">Estimated blockchain fee</p>
                 </div>
               </div>
-              <div className="text-sm font-medium">0.001 ETH</div>
+              <div className="text-sm font-medium">0.001 ADA</div>
             </div>
 
             <Button type="submit" className="w-full" disabled={isLoading}>

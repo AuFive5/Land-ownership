@@ -16,7 +16,7 @@ import { format } from 'date-fns';
 const Dashboard = () => {
   const { lands, userLands, transactions } = useLandRegistry();
   const { walletInfo } = useWeb3();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [selectedLand, setSelectedLand] = useState<Land | null>(null);
 
   // Statistics
@@ -30,6 +30,32 @@ const Dashboard = () => {
   const handleMarkerClick = (land: Land) => {
     setSelectedLand(land);
   };
+
+  if(isAdmin){
+    return (
+      <div className="container py-8">
+        <h1 className="text-3xl font-bold tracking-tight mb-4">Admin Dashboard</h1>
+        <p className="text-muted-foreground mb-6">
+          Welcome back, {user?.name || 'Admin'}! You have access to all properties and transactions.
+        </p>
+        <Card>
+          <CardHeader>
+            <CardTitle>All Properties</CardTitle>
+            <CardDescription>Manage all registered properties.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {lands.length === 0 ? (
+              <p>No properties registered yet.</p>
+            ) : (
+              lands.map((land) => (
+                <LandCard key={land.id} land={land} />
+              ))
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="container py-8">

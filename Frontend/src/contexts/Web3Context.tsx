@@ -1,10 +1,9 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import Web3 from 'web3';
-import { WalletInfo, ProviderType } from '@/types';
+import { WalletInfo, ProviderType, CardanoWallet, CardanoApi } from '@/types';
 import { toast } from '@/hooks/use-toast';
 
 interface Web3ContextType {
-  web3: Web3 | null;
+  wallet: CardanoWallet | null;
   walletInfo: WalletInfo | null;
   provider: ProviderType;
   connecting: boolean;
@@ -21,12 +20,12 @@ const defaultWalletInfo: WalletInfo = {
 };
 
 const Web3Context = createContext<Web3ContextType>({
-  web3: null,
+  wallet: null,
   walletInfo: defaultWalletInfo,
   provider: null,
   connecting: false,
-  connectWallet: async () => {},
-  disconnectWallet: () => {},
+  connectWallet: async () => { },
+  disconnectWallet: () => { },
   isConnected: false
 });
 
@@ -37,7 +36,7 @@ interface Web3ProviderProps {
 }
 
 export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
-  const [web3, setWeb3] = useState<Web3 | null>(null);
+  const [wallet, setWallet] = useState<CardanoWallet | null>(null);
   const [walletInfo, setWalletInfo] = useState<WalletInfo | null>(null);
   const [provider, setProvider] = useState<ProviderType>(null);
   const [connecting, setConnecting] = useState(false);
@@ -45,129 +44,112 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
   // Check for existing connection on mount
   useEffect(() => {
     const checkConnection = async () => {
-      // For demo purposes, we'll check if window.ethereum is available
-      if (window.ethereum) {
+      const savedProvider = localStorage.getItem('walletProvider') as ProviderType;
+      if (savedProvider) {
         try {
-          const web3Instance = new Web3(window.ethereum);
-          const accounts = await web3Instance.eth.getAccounts();
-          
-          if (accounts.length > 0) {
-            const address = accounts[0];
-            const balance = await web3Instance.eth.getBalance(address);
-            const balanceInEth = web3Instance.utils.fromWei(balance, 'ether');
-            
-            // Mock provider detection
-            const detectedProvider = localStorage.getItem('walletProvider') as ProviderType || 'nami';
-            
-            setWeb3(web3Instance);
-            setWalletInfo({
-              address,
-              balance: balanceInEth,
-              connected: true,
-              network: 'Testnet' // Mock network
-            });
-            setProvider(detectedProvider);
-          }
+          await connectWallet(savedProvider);
         } catch (error) {
           console.error('Failed to reconnect wallet:', error);
         }
       }
     };
-    
+
     checkConnection();
   }, []);
 
   const connectWallet = async (providerType: ProviderType) => {
     if (!providerType) return;
-    
+
     setConnecting(true);
-    
+
     try {
-      // Mock different wallet providers
-      // In a real app, this would use the specific wallet's API
-      
-      // For demo, we'll use Web3 with window.ethereum if available
-      if (window.ethereum) {
-        const web3Instance = new Web3(window.ethereum);
-        
-        try {
-          // Request account access
-          await window.ethereum.request({ method: 'eth_requestAccounts' });
-          const accounts = await web3Instance.eth.getAccounts();
-          
-          if (accounts.length === 0) {
-            throw new Error('No accounts found');
+      let walletApi: CardanoApi;
+
+      switch (providerType) {
+        case 'nami':
+          if (!(window as any).cardano?.nami) {
+            throw new Error('Nami wallet not installed');
           }
-          
-          const address = accounts[0];
-          const balance = await web3Instance.eth.getBalance(address);
-          const balanceInEth = web3Instance.utils.fromWei(balance, 'ether');
-          
-          // Save provider type for reconnection
-          localStorage.setItem('walletProvider', providerType);
-          
-          setWeb3(web3Instance);
-          setWalletInfo({
-            address,
-            balance: balanceInEth,
-            connected: true,
-            network: 'Testnet' // Mock network
-          });
-          setProvider(providerType);
-          
-          toast({
-            title: 'Wallet Connected',
-            description: `Connected to ${providerType} wallet`,
-          });
-        } catch (error) {
-          console.error('User rejected connection:', error);
-          toast({
-            title: 'Connection Failed',
-            description: 'Failed to connect wallet. Please try again.',
-            variant: 'destructive'
-          });
-        }
-      } else {
-        // If no ethereum provider is available (like in our environment)
-        // Mock a successful connection for demo purposes
-        setTimeout(() => {
-          const mockAddress = '0x' + Array(40).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('');
-          setWalletInfo({
-            address: mockAddress,
-            balance: '100.00',
-            connected: true,
-            network: 'Testnet' // Mock network
-          });
-          setProvider(providerType);
-          
-          // Mock web3 instance
-          const mockWeb3 = new Web3('https://rpc-testnet.example.com');
-          setWeb3(mockWeb3);
-          
-          toast({
-            title: 'Wallet Connected',
-            description: `Connected to ${providerType} wallet (Demo Mode)`,
-          });
-        }, 1000);
+          walletApi = (window as any).cardano.nami;
+          break;
+
+        case 'eternl':
+          if (!(window as any).cardano?.eternl) {
+            throw new Error('Eternl wallet not installed');
+          }
+          walletApi = (window as any).cardano.eternl;
+          break;
+
+        default:
+          throw new Error('Unsupported wallet provider');
       }
+
+      const wallet = await walletApi.enable();
+
+      // Get wallet address
+      const addresses = await wallet.getUsedAddresses();
+      const address = addresses[0];
+
+      // Get balance in Lovelace (1 ADA = 1,000,000 Lovelace)
+      const balance = await wallet.getBalance();
+      const balanceInAda = parseFloat(balance) / 1000000;
+
+      // Get network info
+      const networkId = await wallet.getNetworkId();
+      const network = networkId === 1 ? 'Mainnet' : 'Testnet';
+
+      setWallet(wallet);
+      setWalletInfo({
+        address,
+        balance: balanceInAda.toString(),
+        connected: true,
+        network
+      });
+      setProvider(providerType);
+
+      // Save provider type for reconnection
+      localStorage.setItem('walletProvider', providerType);
+
+      toast({
+        title: 'Wallet Connected',
+        description: `Connected to ${providerType} wallet`,
+      });
     } catch (error) {
       console.error('Connection error:', error);
-      toast({
-        title: 'Connection Error',
-        description: 'An error occurred while connecting to the wallet.',
-        variant: 'destructive'
-      });
+
+      // For demo purposes, create mock connection if wallet is not available
+      if (process.env.NODE_ENV === 'development') {
+        const mockAddress = 'addr1' + Array(58).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+        setWalletInfo({
+          address: mockAddress,
+          balance: '100.00',
+          connected: true,
+          network: 'Testnet'
+        });
+        setProvider(providerType);
+
+        toast({
+          title: 'Wallet Connected',
+          description: `Connected to ${providerType} wallet (Demo Mode)`,
+        });
+      } else {
+        toast({
+          title: 'Connection Error',
+          description: error instanceof Error ? error.message : 'Failed to connect wallet',
+          variant: 'destructive'
+        });
+      }
     } finally {
       setConnecting(false);
     }
   };
 
   const disconnectWallet = () => {
-    setWeb3(null);
+    setWallet(null);
     setWalletInfo(null);
     setProvider(null);
     localStorage.removeItem('walletProvider');
-    
+
     toast({
       title: 'Wallet Disconnected',
       description: 'Your wallet has been disconnected.'
@@ -177,7 +159,7 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
   return (
     <Web3Context.Provider
       value={{
-        web3,
+        wallet,
         walletInfo,
         provider,
         connecting,

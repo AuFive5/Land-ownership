@@ -11,13 +11,13 @@ const Home = () => {
 
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: { duration: 0.6 }
     }
   };
-  
+
   const stagger = {
     hidden: { opacity: 0 },
     visible: {
@@ -34,7 +34,7 @@ const Home = () => {
       <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-background to-background/80">
         <div className="container mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <motion.div 
+            <motion.div
               initial="hidden"
               animate="visible"
               variants={fadeIn}
@@ -61,7 +61,7 @@ const Home = () => {
                 </Button>
               </div>
             </motion.div>
-            
+
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -84,7 +84,7 @@ const Home = () => {
             </p>
           </div>
 
-          <motion.div 
+          <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
@@ -168,7 +168,7 @@ const Home = () => {
             {/* Timeline line */}
             <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-border" />
 
-            <motion.div 
+            <motion.div
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
@@ -176,7 +176,7 @@ const Home = () => {
               className="space-y-16"
             >
               {/* Step 1 */}
-              <motion.div 
+              <motion.div
                 variants={fadeIn}
                 className="relative flex justify-between items-center"
               >
@@ -190,23 +190,23 @@ const Home = () => {
                   1
                 </div>
                 <div className="w-5/12 pl-8">
-                  <img 
-                    src="https://images.pexels.com/photos/8297250/pexels-photo-8297250.jpeg?auto=compress&cs=tinysrgb&w=800" 
-                    alt="Property Registration" 
+                  <img
+                    src="https://images.timesproperty.com/blog/8738/Property_registration.jpg"
+                    alt="Property Registration"
                     className="rounded-lg shadow-md w-full h-48 object-cover"
                   />
                 </div>
               </motion.div>
 
               {/* Step 2 */}
-              <motion.div 
+              <motion.div
                 variants={fadeIn}
                 className="relative flex justify-between items-center"
               >
                 <div className="w-5/12 pr-8">
-                  <img 
-                    src="https://images.pexels.com/photos/7876528/pexels-photo-7876528.jpeg?auto=compress&cs=tinysrgb&w=800" 
-                    alt="Verification Process" 
+                  <img
+                    src="https://cdn.mos.cms.futurecdn.net/AztkTja5A69exagiXJ4Ttb-1200-80.jpg"
+                    alt="Verification Process"
                     className="rounded-lg shadow-md w-full h-48 object-cover"
                   />
                 </div>
@@ -222,7 +222,7 @@ const Home = () => {
               </motion.div>
 
               {/* Step 3 */}
-              <motion.div 
+              <motion.div
                 variants={fadeIn}
                 className="relative flex justify-between items-center"
               >
@@ -236,9 +236,9 @@ const Home = () => {
                   3
                 </div>
                 <div className="w-5/12 pl-8">
-                  <img 
-                    src="https://images.pexels.com/photos/6969809/pexels-photo-6969809.jpeg?auto=compress&cs=tinysrgb&w=800" 
-                    alt="Property Ownership" 
+                  <img
+                    src="https://images.pexels.com/photos/6969809/pexels-photo-6969809.jpeg?auto=compress&cs=tinysrgb&w=800"
+                    alt="Property Ownership"
                     className="rounded-lg shadow-md w-full h-48 object-cover"
                   />
                 </div>

@@ -6,9 +6,9 @@ export const mockLands: Land[] = [
     id: 'land_1',
     owner: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
     location: {
-      lat: 37.7749,
-      lng: -122.4194,
-      address: '123 Main St, San Francisco, CA 94105'
+      lat: -1.286389,
+      lng: 36.817223,
+      address: '123 Nairobi St, Nairobi, Kenya'
     },
     area: 2500,
     propertyType: 'residential',
@@ -37,9 +37,9 @@ export const mockLands: Land[] = [
     id: 'land_2',
     owner: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
     location: {
-      lat: 34.0522,
-      lng: -118.2437,
-      address: '456 Oak Ave, Los Angeles, CA 90001'
+      lat: -26.204103,
+      lng: 28.047304,
+      address: '456 Johannesburg Ave, Johannesburg, South Africa'
     },
     area: 1800,
     propertyType: 'residential',
@@ -61,9 +61,9 @@ export const mockLands: Land[] = [
     id: 'land_3',
     owner: '0x8aC7230489E80000d517Fa9E51F1d5791bD8E1B4',
     location: {
-      lat: 40.7128,
-      lng: -74.0060,
-      address: '789 Pine St, New York, NY 10001'
+      lat: 6.524379,
+      lng: 3.379206,
+      address: '789 Lagos St, Lagos, Nigeria'
     },
     area: 1200,
     propertyType: 'commercial',
@@ -92,9 +92,9 @@ export const mockLands: Land[] = [
     id: 'land_4',
     owner: '0x5B38Da6a701c568545dCfcB03FcB875f56beddC4',
     location: {
-      lat: 41.8781,
-      lng: -87.6298,
-      address: '321 Elm St, Chicago, IL 60007'
+      lat: -33.924869,
+      lng: 18.424055,
+      address: '321 Cape Town St, Cape Town, South Africa'
     },
     area: 5000,
     propertyType: 'agricultural',
@@ -116,9 +116,9 @@ export const mockLands: Land[] = [
     id: 'land_5',
     owner: '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2',
     location: {
-      lat: 47.6062,
-      lng: -122.3321,
-      address: '567 Maple Dr, Seattle, WA 98101'
+      lat: -1.94995,
+      lng: 30.05885,
+      address: '567 Kigali Dr, Kigali, Rwanda'
     },
     area: 3000,
     propertyType: 'commercial',

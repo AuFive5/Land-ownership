@@ -1,3 +1,5 @@
+import type { BaseAddress, Value } from '@emurgo/cardano-serialization-lib-browser';
+
 export interface Land {
   id: string;
   owner: string;
@@ -51,3 +53,17 @@ export interface WalletInfo {
 }
 
 export type ProviderType = 'nami' | 'eternl' | null;
+
+export interface CardanoWallet {
+  getUsedAddresses(): Promise<string[]>;
+  getBalance(): Promise<string>;
+  getNetworkId(): Promise<number>;
+  signTx(tx: any): Promise<any>;
+  submitTx(tx: any): Promise<string>;
+  getUtxos(): Promise<any[]>;
+  getCollateral(): Promise<any[]>;
+}
+
+export interface CardanoApi {
+  enable(): Promise<CardanoWallet>;
+}
