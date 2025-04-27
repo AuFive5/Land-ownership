@@ -10,13 +10,12 @@ interface AuthContextType {
   logout: () => void;
 }
 
-
 const AuthContext = createContext<AuthContextType>({
   user: null,
   isAdmin: false,
   isVerifier: false,
   loading: true,
-  logout: () => {}
+  logout: () => { }
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -41,20 +40,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       try {
         // In a real app, we would fetch user data from an API
         // For this demo, we'll mock user data based on the wallet address
-        
+
         // Simulate API call delay
         await new Promise(resolve => setTimeout(resolve, 800));
-        
+
         const mockUser: User = {
           id: '1',
           walletAddress: walletInfo.address,
           name: walletInfo.address.substring(0, 8),
           email: `user_${walletInfo.address.substring(2, 8)}@example.com`,
-          role: walletInfo.address.endsWith('0') ? 'admin' : 
-                walletInfo.address.endsWith('1') ? 'verifier' : 'user',
+          role: walletInfo.address.endsWith('0') ? 'admin' :
+            walletInfo.address.endsWith('1') ? 'verifier' : 'user',
           createdAt: new Date().toISOString()
         };
-        
+
         setUser(mockUser);
       } catch (error) {
         console.error('Error fetching user data:', error);
