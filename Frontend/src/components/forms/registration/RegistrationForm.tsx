@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
@@ -24,10 +24,10 @@ const formSchema = z.object({
   propertyType: z.enum(['residential', 'commercial', 'agricultural']),
   area: z.number().positive({ message: 'Area must be positive' }),
   price: z.number().positive({ message: 'Price must be positive' }),
-  
+
   // Step 2: Location
   location: locationSchema,
-  
+
   // Step 3: Documents
   documents: z.array(
     z.object({
@@ -76,6 +76,11 @@ const RegistrationForm = () => {
       const success = await registerLand({
         ...data,
         owner: walletInfo.address,
+        documents: data.documents.map((doc, index) => ({
+          ...doc,
+          id: `doc-${index}`, // Generate a unique ID for each document
+          uploadedAt: new Date().toISOString(), // Add the current timestamp
+        })),
       });
 
       if (success) {
@@ -94,12 +99,12 @@ const RegistrationForm = () => {
     }
   };
 
-  const goToNext = () => {
+  const goToNext = async () => {
     if (step === 'step1') {
-      const isValid = form.trigger(['propertyType', 'area', 'price']);
+      const isValid = await form.trigger(['propertyType', 'area', 'price']);
       if (isValid) setStep('step2');
     } else if (step === 'step2') {
-      const isValid = form.trigger(['location']);
+      const isValid = await form.trigger(['location']);
       if (isValid) setStep('step3');
     }
   };
@@ -125,50 +130,52 @@ const RegistrationForm = () => {
   }
 
   return (
-    <div className="w-full max-w-3xl mx-auto">
-      <Tabs value={step} onValueChange={setStep} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-8">
-          <TabsTrigger value="step1">Property Details</TabsTrigger>
-          <TabsTrigger value="step2">Location</TabsTrigger>
-          <TabsTrigger value="step3">Documents</TabsTrigger>
-        </TabsList>
-        
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <TabsContent value="step1">
-            <StepOne form={form} />
-            <div className="flex justify-end mt-6">
-              <Button type="button" onClick={goToNext}>
-                Next Step
-              </Button>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="step2">
-            <StepTwo form={form} />
-            <div className="flex justify-between mt-6">
-              <Button type="button" variant="outline" onClick={goToPrevious}>
-                Previous
-              </Button>
-              <Button type="button" onClick={goToNext}>
-                Next Step
-              </Button>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="step3">
-            <StepThree form={form} />
-            <div className="flex justify-between mt-6">
-              <Button type="button" variant="outline" onClick={goToPrevious}>
-                Previous
-              </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? 'Submitting...' : 'Register Property'}
-              </Button>
-            </div>
-          </TabsContent>
-        </form>
-      </Tabs>
-    </div>
+    <FormProvider {...form}>
+      <div className="w-full max-w-3xl mx-auto">
+        <Tabs value={step} onValueChange={setStep} className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mb-8">
+            <TabsTrigger value="step1">Property Details</TabsTrigger>
+            <TabsTrigger value="step2">Location</TabsTrigger>
+            <TabsTrigger value="step3">Documents</TabsTrigger>
+          </TabsList>
+
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <TabsContent value="step1">
+              <StepOne form={form} />
+              <div className="flex justify-end mt-6">
+                <Button type="button" onClick={goToNext}>
+                  Next Step
+                </Button>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="step2">
+              <StepTwo form={form} />
+              <div className="flex justify-between mt-6">
+                <Button type="button" variant="outline" onClick={goToPrevious}>
+                  Previous
+                </Button>
+                <Button type="button" onClick={goToNext}>
+                  Next Step
+                </Button>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="step3">
+              <StepThree form={form} />
+              <div className="flex justify-between mt-6">
+                <Button type="button" variant="outline" onClick={goToPrevious}>
+                  Previous
+                </Button>
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading ? 'Submitting...' : 'Register Property'}
+                </Button>
+              </div>
+            </TabsContent>
+          </form>
+        </Tabs>
+      </div>
+    </FormProvider>
   );
 };
 

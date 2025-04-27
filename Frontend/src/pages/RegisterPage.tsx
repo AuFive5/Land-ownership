@@ -27,7 +27,7 @@ const RegisterPage = () => {
           Complete the form below to register your property on the blockchain. All information will be verified by authorized registry officials.
         </p>
       </div>
-
+      
       <RegistrationForm />
     </div>
   );
